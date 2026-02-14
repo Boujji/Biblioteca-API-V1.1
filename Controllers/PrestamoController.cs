@@ -75,6 +75,9 @@ namespace BibliotecaApi2.Controllers
         [HttpPost]
         public async Task<IActionResult> PostPrestamo ([FromBody] PostPrestamoDto PostDto)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(BibliotecaApi2Response<string>.Fail("ModelState Error"));
+            
             var libroDisponible = await _context.Libros
             .Where(l=> l.Id == PostDto.LibroId && l.Disponible == true)
             .FirstOrDefaultAsync();

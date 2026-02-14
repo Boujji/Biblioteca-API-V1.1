@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programacion\\BibliotecaApi2\\BibliotecaApi2\\BibliotecaApi2.csproj": {}
+    "/Users/cesarleoncalzadilla/Documents/Programacion/Biblioteca-API_2/BibliotecaApi2.csproj": {}
   },
   "projects": {
-    "D:\\Programacion\\BibliotecaApi2\\BibliotecaApi2\\BibliotecaApi2.csproj": {
+    "/Users/cesarleoncalzadilla/Documents/Programacion/Biblioteca-API_2/BibliotecaApi2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programacion\\BibliotecaApi2\\BibliotecaApi2\\BibliotecaApi2.csproj",
+        "projectUniqueName": "/Users/cesarleoncalzadilla/Documents/Programacion/Biblioteca-API_2/BibliotecaApi2.csproj",
         "projectName": "BibliotecaApi2",
-        "projectPath": "D:\\Programacion\\BibliotecaApi2\\BibliotecaApi2\\BibliotecaApi2.csproj",
-        "packagesPath": "C:\\Users\\Cesar\\.nuget\\packages\\",
-        "outputPath": "D:\\Programacion\\BibliotecaApi2\\BibliotecaApi2\\obj\\",
+        "projectPath": "/Users/cesarleoncalzadilla/Documents/Programacion/Biblioteca-API_2/BibliotecaApi2.csproj",
+        "packagesPath": "/Users/cesarleoncalzadilla/.nuget/packages/",
+        "outputPath": "/Users/cesarleoncalzadilla/Documents/Programacion/Biblioteca-API_2/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Cesar\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/cesarleoncalzadilla/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +44,10 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[10.0.3, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.2, )"
@@ -99,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

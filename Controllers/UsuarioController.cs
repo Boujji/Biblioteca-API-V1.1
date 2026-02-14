@@ -95,7 +95,51 @@ namespace BibliotecaApi2.Controllers
             return Ok(BibliotecaApi2Response<List<UsuarioMorosDto>>.Ok(usuariosMorosos));
         }
 
-        
+        //
+        // Post : api/usuario
+        //
+        [HttpPost]
+        public async Task<IActionResult> PostUsuario ([FromBody] PostUsuarioDto PostUser)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(BibliotecaApi2Response<string>.Fail("ModelState Error."));
+
+            var newUser = new Usuario
+            {
+                Name = PostUser.Name,
+                eMail = PostUser.eMail,
+                FechaRegistro = PostUser.FechaRegistro
+            };
+
+            _context.Usuarios.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            return Ok(new {message = "Usuario Creado Coreectamente."});        
+        }
+
+        // ==================
+        // Put : api/usuario
+        // ==================
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> PutUsuario (Guid Id, [FromBody] PutUsuarioDto UsuarioEd)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(BibliotecaApi2Response<string>.Fail("ModelState Error."));
+
+            var user = await _context.Usuarios.Where(u=> u.Id == Id).FirstOrDefaultAsync();
+
+            if(user == null)
+                return NotFound(BibliotecaApi2Response<string>.Fail("Usuario no encontrado."));
+
+            user.Name = UsuarioEd.Name;
+            user.eMail = UsuarioEd.Name;
+            user.PenalizacionPendiente = UsuarioEd.PenalizacionPendiente;
+            user.DescNextPrest = UsuarioEd.DescNextPrest;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(BibliotecaApi2Response<Usuario>.Ok(user , "Usuario modificado exitosamente."));         
+        }
     }   
 
 }    
