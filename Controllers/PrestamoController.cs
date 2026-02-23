@@ -9,7 +9,7 @@ namespace BibliotecaApi2.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controllers]")]
+    [Route("api/[controller]")]
     public class PrestamoController : ControllerBase
     {
         private readonly BibliotecaApi2DbContext _context;
@@ -46,9 +46,9 @@ namespace BibliotecaApi2.Controllers
         // GetId: api/prestamo
         // ====================
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetPrestamoById (Guid PresId)
+        public async Task<IActionResult> GetPrestamoById (Guid Id)
         {
-            var prestamo = await _context.Prestamos.Where(p=> p.Id == PresId).FirstOrDefaultAsync();
+            var prestamo = await _context.Prestamos.Where(p=> p.Id == Id).FirstOrDefaultAsync();
 
             if( prestamo == null)
                 return NotFound(BibliotecaApi2Response<string>.Fail("No se ha encontrado nignuna coinicidencia"));
@@ -82,7 +82,7 @@ namespace BibliotecaApi2.Controllers
             .Where(l=> l.Id == PostDto.LibroId && l.Disponible == true)
             .FirstOrDefaultAsync();
 
-            var usuarioExiste = await _context.Usuarios
+            var usuarioExiste = await _context.Usuarios.Include(u=> u.Prestamos)
             .Where(u=> u.Id == PostDto.UsuarioId)
             .FirstOrDefaultAsync();
 
@@ -104,12 +104,28 @@ namespace BibliotecaApi2.Controllers
 
             var prestamo = new Prestamo
             {
-              Id = new Guid(),
+              Id = Guid.NewGuid(),
               FechaInicio = PostDto.FechaInicio,
               FechaFin = PostDto.FechaFin,
               LibroId = PostDto.LibroId,  
               UsuarioId = PostDto.UsuarioId,
-              CostoDiario = PostDto.CostoDiario  
+              Usuario = usuarioExiste,
+              Libro = libroDisponible,
+              CostoDiario = PostDto.CostoDiario,
+              CostoEstimado = costoEstimado 
+            };
+
+            var prestamoResponseDto = new PrestamoResponseDto
+            {
+                Id = prestamo.Id,
+                LibroId = prestamo.LibroId,
+                Libro = prestamo.Libro,
+                UsuarioId = prestamo.UsuarioId,
+                Usuario = prestamo.Usuario,
+                FechaInicio = prestamo.FechaInicio,
+                FechaFin = prestamo.FechaFin,
+                CostoDiario = prestamo.CostoDiario,
+                CostoEstimado = prestamo.CostoEstimado
             };
 
             _context.Prestamos.Add(prestamo);
@@ -120,16 +136,16 @@ namespace BibliotecaApi2.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(prestamo);                   
+            return Ok(BibliotecaApi2Response<PrestamoResponseDto>.Ok(prestamoResponseDto, "Prestamo creado correctamente"));                   
         }
 
         // ===================
         // Put : api/Prestamo
         // ===================
         [HttpPut("putReturn/{id}")]
-        public async Task<IActionResult> PutReturnPrestamo ([FromBody] Guid PresId)
+        public async Task<IActionResult> PutReturnPrestamo (Guid id)
         {
-            var prestamoReturn = await _context.Prestamos.Include(p=> p.Libro).Include(p=> p.Usuario).Where(p=> p.Id == PresId).FirstOrDefaultAsync();
+            var prestamoReturn = await _context.Prestamos.Include(p=> p.Libro).Include(p=> p.Usuario).Where(p=> p.Id == id).FirstOrDefaultAsync();
             
             if(prestamoReturn == null)
                 return NotFound(BibliotecaApi2Response<string>.Fail("Error. Prestamo no encontrado."));
@@ -158,7 +174,7 @@ namespace BibliotecaApi2.Controllers
 
             await _context.SaveChangesAsync(); 
 
-            return Ok(new {message = "Prestamo modificado correctamente"}); 
+            return Ok(new {message = "Prestamo devuelto correctamente"}); 
         } 
 
     }

@@ -65,3 +65,7 @@ dist/
 ## Docker
 docker-compose.override.yml
 **/.dockerignore
+
+## Others
+*.pdb
+*.mdb

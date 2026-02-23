@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using BibliotecaApi2.Models;
 using System.Security.Cryptography.X509Certificates;
+using ImportadoraApi.Models;
 
 public class BibliotecaApi2DbContext : DbContext
 {
     public DbSet<Libro> Libros { get ; set; } = null!;
     public DbSet<Prestamo> Prestamos { get ; set; } = null!;
     public DbSet<Usuario> Usuarios { get ; set; } = null!;
+    public DbSet<RefreshTokens> RefreshTokens { get; set; } = null!;
 
 
     public BibliotecaApi2DbContext(DbContextOptions<BibliotecaApi2DbContext> options) : base(options)
@@ -34,6 +36,13 @@ public class BibliotecaApi2DbContext : DbContext
         .HasMany(l=> l.Prestamos)
         .WithOne(p=> p.Libro)
         .HasForeignKey(p=> p.LibroId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        //Usuario - RefreshTokens
+        modelBuilder.Entity<Usuario>()
+        .HasMany(u => u.refreshToken)
+        .WithOne(rt => rt.Usuario)
+        .HasForeignKey(rt => rt.UsuarioId)
         .OnDelete(DeleteBehavior.Cascade);
     }
 }

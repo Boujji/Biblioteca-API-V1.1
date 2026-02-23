@@ -1,4 +1,5 @@
 using BibliotecaApi2.Enum;
+using ImportadoraApi.Models;
 
 namespace BibliotecaApi2.Models
 {
@@ -13,5 +14,6 @@ namespace BibliotecaApi2.Models
         public decimal PenalizacionPendiente { get ; set; }
         public ICollection<Prestamo> Prestamos { get ; set; } = new List<Prestamo>();
         public decimal DescNextPrest {get ; set ;}
+        public ICollection <RefreshTokens> refreshToken { get ; set; } = new List <RefreshTokens>();
     }
 }

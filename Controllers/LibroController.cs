@@ -9,7 +9,7 @@ namespace BibliotecaApi2.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controllers]")]
+    [Route("api/[controller]")]
     public class LibroController : ControllerBase
     {
         private readonly BibliotecaApi2DbContext _context;

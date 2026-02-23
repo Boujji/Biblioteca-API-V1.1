@@ -2,7 +2,7 @@ using BibliotecaApi2.Models;
 
 namespace ImportadoraApi.Models
 {
-    public class RefreshToken
+    public class RefreshTokens
     {
         public Guid Id { get; set; }
         public Guid UsuarioId { get; set; }

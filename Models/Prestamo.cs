@@ -11,5 +11,6 @@ namespace BibliotecaApi2.Models
         public DateTime FechaFin { get ; set; }
         public DateTime? FechaDevolucion { get ; set; }
         public decimal CostoDiario {get ; set;}
+        public decimal CostoEstimado { get; set; }
     }
 }

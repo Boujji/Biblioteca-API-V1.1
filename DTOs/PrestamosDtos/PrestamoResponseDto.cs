@@ -13,5 +13,6 @@ namespace BibliotecaApi2.Dtos
         public DateTime FechaFin { get ; set; }
         public DateTime? FechaDevolucion { get ; set; }
         public decimal CostoDiario {get ; set;}
+        public decimal CostoEstimado { get; set; }
     }
 }

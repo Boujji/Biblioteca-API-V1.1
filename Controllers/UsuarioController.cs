@@ -4,12 +4,13 @@ using BibliotecaApi2.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BibliotecaApi2.Utils;
 
 namespace BibliotecaApi2.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controllers]")]
+    [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
         private readonly BibliotecaApi2DbContext _context;
@@ -43,9 +44,9 @@ namespace BibliotecaApi2.Controllers
         // Get : api/usuarioId
         //=====================
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetUserById (Guid UsId)
+        public async Task<IActionResult> GetUserById (Guid Id)
         {
-            var User = await _context.Usuarios.Where(u=> u.Id == UsId).FirstOrDefaultAsync();
+            var User = await _context.Usuarios.Where(u=> u.Id == Id).FirstOrDefaultAsync();
             
             if(User == null)
                 return NotFound(BibliotecaApi2Response<string>.Fail("Usuario no encontrado"));
@@ -69,9 +70,12 @@ namespace BibliotecaApi2.Controllers
         [HttpGet("morosidad/")]
         public async Task<IActionResult> GetUsuariosMorosos ()
         {
-            var usuariosMorosos = await _context.Usuarios
+            var usuariosConPrestamo = await _context.Usuarios
             .Include(u=> u.Prestamos)
-            .Select(u=> new 
+            .Where(u=> u.Prestamos.Any(p=> p.FechaFin < DateTime.UtcNow && p.FechaDevolucion == null))
+            .ToListAsync();
+            
+            var usuariosMorosos = usuariosConPrestamo.Select(u=> new 
             {
                 User = u,
                 PrestamosVencidos = u.Prestamos.Count(p=> p.FechaFin < DateTime.UtcNow && p.FechaDevolucion == null),
@@ -90,14 +94,14 @@ namespace BibliotecaApi2.Controllers
             })
             .OrderByDescending(u=> u.ScoreMorosidad)
             .Take(5)
-            .ToListAsync();
+            .ToList();
 
             return Ok(BibliotecaApi2Response<List<UsuarioMorosDto>>.Ok(usuariosMorosos));
         }
 
-        //
+        // ==================
         // Post : api/usuario
-        //
+        // ==================
         [HttpPost]
         public async Task<IActionResult> PostUsuario ([FromBody] PostUsuarioDto PostUser)
         {
@@ -108,7 +112,8 @@ namespace BibliotecaApi2.Controllers
             {
                 Name = PostUser.Name,
                 eMail = PostUser.eMail,
-                FechaRegistro = PostUser.FechaRegistro
+                PasswordHash = PasswordHelper.Hash(PostUser.Password),
+                FechaRegistro = DateTime.UtcNow,
             };
 
             _context.Usuarios.Add(newUser);
@@ -140,6 +145,22 @@ namespace BibliotecaApi2.Controllers
 
             return Ok(BibliotecaApi2Response<Usuario>.Ok(user , "Usuario modificado exitosamente."));         
         }
-    }   
 
-}    
+        // =====================
+        // Delete : api/usuario
+        // =====================
+        [HttpDelete("usuario/{Id}")]
+        public async Task<IActionResult> DeleteUserById (Guid Id)
+        {
+            var usuario = await _context.Usuarios.Where(u=> u.Id == Id).FirstOrDefaultAsync();
+
+            if(usuario == null)
+                return NotFound(BibliotecaApi2Response<string>.Fail("Usuario no encontrado."));
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(new {message = "Usuario Eliminado."});    
+        }
+    }  
+}      
